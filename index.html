@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const gameBoard = (function () {
+        const gameArray = [
+          [null, null, null],
+          [null, null, null],
+          [null, null, null],
+        ];
+        const logArray = () => {
+          console.log(gameArray);
+        };
+        const placeMarker = (row, column, marker) => {
+          if (gameArray[row][column] == null) {
+            toMoveChanger();
+          } else {
+            gameArray[row][column] = marker;
+          }
+        };
+        return { logArray, placeMarker };
+      })();
+
+      const playerFactory = function (ime, mark) {
+        const name = ime;
+        const marker = mark;
+
+        const markerFetcher = () => {
+          return marker;
+        };
+        return {
+          name,
+          markerFetcher,
+        };
+      };
+
+      const gameController = function (player1, player2) {
+        const playerOne = playerFactory(player1, "X");
+        const playerTwo = playerFactory(player2, "O");
+        let onTheMove = playerOne;
+        const toMoveChanger = () => {
+          if (onTheMove == playerTwo) {
+            return (onTheMove = playerOne);
+          } else {
+            return (onTheMove = playerTwo);
+          }
+        };
+        const playRound = (row, column) => {
+          gameBoard.placeMarker(row, column, toMoveChanger().markerFetcher());
+          gameBoard.logArray();
+        };
+        return { playRound };
+      };
+    </script>
+  </body>
+</html>
