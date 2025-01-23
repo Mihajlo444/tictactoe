@@ -17,13 +17,40 @@
           console.log(gameArray);
         };
         const placeMarker = (row, column, marker) => {
-          if (gameArray[row][column] == null) {
-            toMoveChanger();
-          } else {
-            gameArray[row][column] = marker;
+          gameArray[row][column] = marker;
+        };
+        const winChecker = () => {
+          if (
+            gameArray.some((arr) => {
+              return arr.every((item) => {
+                return item == arr[0] && item !== null;
+              });
+            }) ||
+            gameArray[0].some((item, index, arraj) => {
+              return gameArray.every((arr) => {
+                return arraj[index] == arr[index] && arr[index] !== null;
+              });
+            }) ||
+            gameArray.every((item, index, arraj) => {
+              return arraj[0][0] == item[index] && item[index] !== null;
+            }) ||
+            (gameArray[0][2] !== null &&
+              gameArray.every(
+                (row, index) => row[2 - index] === gameArray[0][2]
+              ))
+          )
+            return "win";
+          else if (
+            gameArray.every((arr) => {
+              return arr.every((item) => {
+                return item !== null;
+              });
+            })
+          ) {
+            return "draw";
           }
         };
-        return { logArray, placeMarker };
+        return { logArray, placeMarker, winChecker };
       })();
 
       const playerFactory = function (ime, mark) {
@@ -42,7 +69,7 @@
       const gameController = function (player1, player2) {
         const playerOne = playerFactory(player1, "X");
         const playerTwo = playerFactory(player2, "O");
-        let onTheMove = playerOne;
+        let onTheMove = playerTwo;
         const toMoveChanger = () => {
           if (onTheMove == playerTwo) {
             return (onTheMove = playerOne);
@@ -53,7 +80,13 @@
         const playRound = (row, column) => {
           gameBoard.placeMarker(row, column, toMoveChanger().markerFetcher());
           gameBoard.logArray();
+          if (gameBoard.winChecker() == "win") {
+            alert(`${onTheMove.name} wins`);
+          } else if (gameBoard.winChecker() == "draw") {
+            alert("it's a draw");
+          }
         };
+
         return { playRound };
       };
     </script>
